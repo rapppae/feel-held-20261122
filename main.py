@@ -26,10 +26,27 @@ TEXT = (
 )
 
 
+MIN_LEN = 1
+MAX_LEN = 280
+
+
+def validate(text: str) -> str:
+    """Entry must be 1-280 Unicode code points; reject out-of-range text."""
+    length = len(text)
+    if length < MIN_LEN or length > MAX_LEN:
+        raise SystemExit(
+            f"entry must be {MIN_LEN}-{MAX_LEN} characters, "
+            f"got {length} code points"
+        )
+    if not text.strip():
+        raise SystemExit("entry must not be blank or whitespace only")
+    return text
+
+
 def main() -> None:
     output_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "entry.txt").write_text(TEXT, encoding="utf-8")
+    (output_dir / "entry.txt").write_text(validate(TEXT), encoding="utf-8")
 
 
 if __name__ == "__main__":
